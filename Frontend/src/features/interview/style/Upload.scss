@@ -1,0 +1,475 @@
+.heading {
+    max-width: 850px;
+    margin: 80px auto 20px;
+    padding: 0 24px;
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+
+    h1 {
+        font-size: clamp(2.4rem, 5vw, 3.8rem);
+        font-weight: 800;
+        line-height: 1.15;
+        color: #fff;
+        margin-bottom: 18px;
+        letter-spacing: -1px;
+
+        span {
+            background: linear-gradient(135deg, #38bdf8, #34d399);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    }
+
+    p {
+        max-width: 700px;
+        margin: 0 auto;
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.72);
+    }
+}
+
+@media (max-width: 768px) {
+    .heading {
+        margin: 50px auto 10px;
+
+        h1 {
+            font-size: 2.2rem;
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    }
+}
+
+.upload {
+
+    width: 100%;
+    min-height: 100vh;
+
+    display: grid;
+    grid-template-columns: 520px 1fr;
+
+    align-items: center;
+
+    gap: 80px;
+
+    padding: 70px;
+
+    overflow: hidden;
+}
+
+//////////////////////////////////////////////////////
+
+.upload__left{
+
+    display:flex;
+    flex-direction:column;
+    gap:30px;
+    background: rgba(0, 0, 0, 0.339);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    padding: 10px;
+    border-radius: 12px;
+
+    animation:slideLeft .8s ease;
+}
+
+.top{
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    label{
+
+        color:white;
+        font-weight:600;
+    }
+
+    textarea{
+
+        width:100%;
+        height:260px;
+
+        resize:none;
+
+        padding:24px;
+
+        font-size:16px;
+
+        border-radius:18px;
+
+        outline:none;
+
+        background:rgba(0, 0, 0, 0.08);
+
+        border:1px solid rgba(255,255,255,.12);
+
+        color:white;
+
+        backdrop-filter:blur(20px);
+
+        transition:.35s;
+
+        &:focus{
+
+            border-color:#3b82f6;
+
+            box-shadow:
+            0 0 30px rgba(59,130,246,.25);
+
+            transform:translateY(-2px);
+        }
+    }
+}
+
+.bottom{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:22px;
+}
+
+.input-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    label{
+
+        color:white;
+
+        font-weight:600;
+    }
+
+    textarea{
+
+        width:100%;
+
+        height:130px;
+
+        resize:none;
+
+        padding:18px;
+
+        border-radius:15px;
+
+        background:rgba(255,255,255,.08);
+
+        border:1px solid rgba(255,255,255,.12);
+
+        color:white;
+
+        backdrop-filter:blur(18px);
+
+        transition:.35s;
+
+        &:focus{
+
+            border-color:#34d399;
+
+            box-shadow:
+            0 0 25px rgba(52,211,153,.2);
+
+            transform:translateY(-2px);
+        }
+    }
+
+    input{
+
+        padding:15px;
+
+        border-radius:15px;
+
+        color:white;
+
+        background:rgba(255,255,255,.08);
+
+        border:1px solid rgba(255,255,255,.12);
+
+        transition:.3s;
+
+        &:hover{
+
+            border-color:#3b82f6;
+        }
+    }
+}
+
+// Small helper text under the resume input, e.g. selected file name
+.file-hint{
+
+    font-size:13px;
+
+    color:rgba(255,255,255,.55);
+}
+
+// Inline error message shown when submission fails or validation fails
+.form-error{
+
+    padding:14px 18px;
+
+    border-radius:12px;
+
+    background:rgba(239,68,68,.1);
+
+    border:1px solid rgba(239,68,68,.3);
+
+    color:#fca5a5;
+
+    font-size:14px;
+}
+
+.generate-btn{
+
+    height:58px;
+
+    border:none;
+
+    border-radius:15px;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    color:white;
+
+    background:linear-gradient(
+        135deg,
+        #3b82f6,
+        #22c55e
+    );
+
+    transition:.35s;
+
+    &:hover{
+
+        transform:translateY(-5px);
+
+        box-shadow:
+        0 20px 40px rgba(59,130,246,.35);
+    }
+
+    &:active{
+
+        transform:scale(.97);
+    }
+
+    // Loading / disabled state - added now that submission can actually fail
+    // or be in-flight, so the button needs to reflect that visually.
+    &:disabled{
+
+        cursor:not-allowed;
+
+        opacity:.6;
+
+        transform:none;
+
+        box-shadow:none;
+    }
+}
+
+//////////////////////////////////////////////////////
+
+.upload__right{
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    animation:fadeIn .8s ease;
+}
+
+.preview-stack{
+
+    position:relative;
+
+    // FIX: fixed 850x650px caused the images to be clipped by .upload's
+    // overflow:hidden on any viewport where the 1fr right column ends up
+    // narrower than 850px - which happens for a wide range of widths just
+    // above the 1200px breakpoint (520px left col + 80px gap + 140px
+    // padding alone already eats ~740px). Scaling to the container and
+    // capping with aspect-ratio keeps both images fully visible and
+    // proportional at any column width instead of overflowing and being
+    // silently cut off.
+    width:100%;
+    max-width:850px;
+    aspect-ratio:850/650;
+}
+
+.preview{
+
+    position:absolute;
+
+    width:100%;
+
+    border-radius:24px;
+
+    box-shadow:
+    0 40px 80px rgba(0,0,0,.45);
+
+    transition:.6s;
+
+    user-select:none;
+}
+
+.preview--back{
+
+    top:0;
+
+    right:0;
+
+    transform:
+    rotate(5deg)
+    translateX(70px);
+
+    opacity:.55;
+
+    animation:
+    float1 7s ease-in-out infinite;
+}
+
+.preview--front{
+
+    left:0;
+
+    bottom:0;
+
+    transform:
+    rotate(-4deg);
+
+    z-index:10;
+
+    animation:
+    float2 7s ease-in-out infinite;
+}
+
+.preview-stack:hover{
+
+    .preview--front{
+
+        transform:
+        rotate(-2deg)
+        scale(1.03);
+    }
+
+    .preview--back{
+
+        transform:
+        rotate(3deg)
+        translateX(100px)
+        scale(.98);
+    }
+}
+
+//////////////////////////////////////////////////////
+
+@keyframes float1{
+
+    0%,100%{
+
+        transform:
+        rotate(5deg)
+        translateY(0)
+        translateX(70px);
+    }
+
+    50%{
+
+        transform:
+        rotate(5deg)
+        translateY(-22px)
+        translateX(70px);
+    }
+}
+
+@keyframes float2{
+
+    0%,100%{
+
+        transform:
+        rotate(-4deg)
+        translateY(0);
+    }
+
+    50%{
+
+        transform:
+        rotate(-4deg)
+        translateY(-18px);
+    }
+}
+
+@keyframes slideLeft{
+
+    from{
+
+        opacity:0;
+
+        transform:
+        translateX(-70px);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:none;
+    }
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+    }
+
+    to{
+
+        opacity:1;
+    }
+}
+
+//////////////////////////////////////////////////////
+
+@media(max-width:1200px){
+
+    .upload{
+
+        grid-template-columns:1fr;
+
+        padding:40px;
+    }
+
+    .upload__right{
+
+        display:none;
+    }
+}
+
+// Slightly tighter padding on small phones so the form doesn't feel
+// cramped against the screen edges.
+@media(max-width:480px){
+
+    .upload{
+
+        padding:24px;
+
+        gap:24px;
+    }
+}
