@@ -1,7 +1,6 @@
 const { GoogleGenAI } =  require("@google/genai")
 const { parse } = require("dotenv")
 const { z } = require("zod")
-// const { zodToJsonSchema } = require("zod-to-json-schema")
 
 const ai = new GoogleGenAI({
     apiKey : process.env.GOOGLE_GENAI_API_KEY
@@ -127,14 +126,11 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
                     - Base everything strictly on the provided job description, resume, and self description.
                     `.trim()
  
-    // CRITICAL: $refStrategy: "none" prevents the $ref/definitions wrapper that Gemini
-    // can't resolve. Without this option, Gemini silently ignores the schema and
-    // free-forms its own structure (including stringifying nested objects).
-     const rawSchema = z.toJSONSchema(interviewReportSchema)
+    const rawSchema = z.toJSONSchema(interviewReportSchema)
     delete rawSchema.$schema
  
-    // Debug: confirm no $ref/definitions/$schema survived before sending
-    console.log("Schema sent to Gemini:", JSON.stringify(rawSchema, null, 2))
+    // // Debug: confirm no $ref/definitions/$schema survived before sending
+    // console.log("Schema sent to Gemini:", JSON.stringify(rawSchema, null, 2))
  
     const response = await ai.models.generateContent({
         model: "gemini-3.5-flash",
@@ -145,19 +141,29 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
         }
     })
  
-    let parsed
+     let parsed
     try {
         parsed = JSON.parse(response.text)
     } catch (err) {
         throw new Error("Failed to parse Gemini response as JSON: " + err.message)
     }
  
-    console.log("Parsed result from Gemini:", parsed)
+    // console.log("Parsed result from Gemini:", parsed)
  
-    // // Validate against the Zod schema so bad/mismatched output fails loudly, not silently
-    // const validated = interviewReportSchema.parse(parsed)
+    // Validate against the Zod schema so bad/mismatched output fails loudly, not silently
+    const validated = interviewReportSchema.parse(parsed)
  
-    // return validated
+    if (!validated.candidateEmail) {
+        const emailMatch = (resume || "").match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/)
+        if (emailMatch) validated.candidateEmail = emailMatch[0]
+    }
+ 
+    if (!validated.candidateName) {
+        const firstLine = (resume || "").split("\n").map(l => l.trim()).find(l => l.length > 0)
+        if (firstLine) validated.candidateName = firstLine
+    }
+ 
+    return validated
 }
 
 

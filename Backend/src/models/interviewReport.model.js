@@ -1,40 +1,5 @@
 const mongoose = require('mongoose')
 
-/**
- * - job description schema : string
- * - resume text : String
- * - self description : String
- * 
- * - matchScore : Number
- * 
- * - Technical Questions : 
- *                  [{
- *                      question : "",
- *                      intentions : "",
- *                      answer : "",
- *                   }]
- * - Behavioural Queations : []
- *                  [{
- *                      question : "",
- *                      intentions : "",
- *                      answer : "",
- *                   }]
- * - Skill gaps : 
- *                  [{
- *                      skill : "",
- *                      severity : {
- *                                  type : String,
- *                                  enum : ["Low", "medium", "high"]
- *                                 }
- *                  }]
- * - Prepration plan : 
- *                  [{
- *                      day : Number,
- *                      focus : String,
- *                      tasks : [String]
- *                  }]
- */
-
 const technicalQuestionSchema = new mongoose.Schema({
     question : {
         type : String,
@@ -193,7 +158,11 @@ const interviewReportSchema = new mongoose.Schema({
     matchedSkill : [matchedSkillSchema],
     skillGaps : [skillGapSchema],
     overallFeedback : [overallFeedbackSchema],
-    preparationPlan : [preparationPlanSchema]
+    preparationPlan : [preparationPlanSchema],
+    user : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "users"
+    }
 }, {
     timestamps: true
 })

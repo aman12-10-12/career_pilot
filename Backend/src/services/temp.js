@@ -168,3 +168,38 @@ module.exports = {
 
 
 // module.exports = invokeGeminiAi
+
+/**
+ * - job description schema : string
+ * - resume text : String
+ * - self description : String
+ * 
+ * - matchScore : Number
+ * 
+ * - Technical Questions : 
+ *                  [{
+ *                      question : "",
+ *                      intentions : "",
+ *                      answer : "",
+ *                   }]
+ * - Behavioural Queations : []
+ *                  [{
+ *                      question : "",
+ *                      intentions : "",
+ *                      answer : "",
+ *                   }]
+ * - Skill gaps : 
+ *                  [{
+ *                      skill : "",
+ *                      severity : {
+ *                                  type : String,
+ *                                  enum : ["Low", "medium", "high"]
+ *                                 }
+ *                  }]
+ * - Prepration plan : 
+ *                  [{
+ *                      day : Number,
+ *                      focus : String,
+ *                      tasks : [String]
+ *                  }]
+ */
