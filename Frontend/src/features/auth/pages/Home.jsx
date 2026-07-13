@@ -3,6 +3,7 @@ import "./Home.scss";
 import dashboardPreview1 from "../../../../assets/resume.png";
 import dashboardPreview2 from "../../../../assets/resume2.png";
 import evaluationIllustration from "../../../../assets/creative-image.svg";
+import { Link } from "react-router"
 
 function useScrollReveal() {
     const rootRef = useRef(null);
@@ -281,7 +282,9 @@ export default function Home() {
                     </p>
 
                     <div className="hero__actions">
-                        <button className="btn btn--primary">Upload Resume</button>
+                        <Link to={"/upload"}>
+                            <button className="btn btn--primary">Upload Resume</button>
+                        </Link>
                         <button className="btn btn--ghost">View Demo</button>
                     </div>
 
