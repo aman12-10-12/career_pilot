@@ -83,7 +83,9 @@ const interviewReportSchema = z.object({
         .describe("A single overall feedback block summarizing resume quality, fit, and hiring chances."),
  
     preparationPlan: z.array(preparationPlanSchema)
-        .describe("A day by day preparation plan to help the candidate get ready for this interview.")
+        .describe("A day by day preparation plan to help the candidate get ready for this interview."),
+    
+    title: z.string().describe("the title of the job for which the interview report is generated")
 })
 
 
@@ -128,9 +130,7 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
  
     const rawSchema = z.toJSONSchema(interviewReportSchema)
     delete rawSchema.$schema
- 
-    // // Debug: confirm no $ref/definitions/$schema survived before sending
-    // console.log("Schema sent to Gemini:", JSON.stringify(rawSchema, null, 2))
+
  
     const response = await ai.models.generateContent({
         model: "gemini-3.5-flash",
@@ -150,7 +150,6 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
  
     // console.log("Parsed result from Gemini:", parsed)
  
-    // Validate against the Zod schema so bad/mismatched output fails loudly, not silently
     const validated = interviewReportSchema.parse(parsed)
  
     if (!validated.candidateEmail) {

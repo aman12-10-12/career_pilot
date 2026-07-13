@@ -1,19 +1,64 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import "../style/Upload.scss"
 import dashboard1 from "../../../../assets/resume.png";
 import dashboard2 from "../../../../assets/resume2.png";
-
-
+import { useInterview } from "../hooks/useInterview";
 
 const Upload = () => {
+  const { loading, generateReport, reports, getReports } = useInterview();
+  const navigate = useNavigate();
+  const safeReports = Array.isArray(reports) ? reports : [];
+
   const [jobDescription, setJobDescription] = useState("");
   const [selfDescription, setSelfDescription] = useState("");
   const [resumeFile, setResumeFile] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState("");
+  const fileInputRef = useRef(null);
+
+  const acceptFile = (file) => {
+    if (!file) return;
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+      setError("Only PDF files are supported.");
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      setError("File is too large. Max size is 3MB.");
+      return;
+    }
+    setError("");
+    setResumeFile(file);
+  };
 
   const handleFileChange = (e) => {
-    setResumeFile(e.target.files[0] || null);
+    acceptFile(e.target.files[0]);
+  };
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleRemoveFile = (e) => {
+    e.stopPropagation();
+    setResumeFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    acceptFile(e.dataTransfer.files[0]);
   };
 
   const handleSubmit = async (e) => {
@@ -29,41 +74,17 @@ const Upload = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("resume", resumeFile);
-    formData.append("jobDescription", jobDescription);
-    formData.append("selfDescription", selfDescription);
-
-    setIsSubmitting(true);
-
     try {
-      // NOTE: adjust the base URL below to match your actual API origin
-      // (e.g. via an env variable like import.meta.env.VITE_API_URL),
-      // and swap `credentials: "include"` for an Authorization header
-      // if your auth middleware expects a Bearer token instead of a cookie.
-      const response = await fetch("/api/interview-prep/ai-resume-checker", {
-        method: "POST",
-        credentials: "include",
-        body: formData, // do NOT set Content-Type manually - the browser
-                         // sets the correct multipart boundary automatically
-      });
-
-      if (!response.ok) {
-        const errBody = await response.json().catch(() => ({}));
-        throw new Error(errBody.message || "Failed to generate interview report.");
-      }
-
-      const data = await response.json();
-
-      // TODO: replace with your actual navigation, e.g.:
-      // navigate(`/reports/${data.interviewReport._id}`)
-      console.log("Interview report generated:", data.interviewReport);
+      const createdReport = await generateReport({ jobDescription, resumeFile, selfDescription });
+      navigate(`/interview/${createdReport._id}`);
     } catch (err) {
-      setError(err.message || "Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+      setError(err?.response?.data?.message || "Failed to generate interview report. Please try again.");
     }
   };
+
+  useEffect(() => {
+    getReports().catch(console.error);
+  }, []);
 
   return (
       <div>
@@ -92,15 +113,48 @@ const Upload = () => {
                 <div className="bottom">
                     <div className="input-group">
                         <label htmlFor="resume">Upload Resume</label>
-                        <input
-                            type="file"
-                            name="resume"
-                            id="resume"
-                            accept=".pdf"
-                            onChange={handleFileChange}
-                        />
-                        {resumeFile && <span className="file-hint">{resumeFile.name}</span>}
+
+                        <div
+                            className={`dropzone ${isDragging ? "dropzone--active" : ""} ${resumeFile ? "dropzone--filled" : ""}`}
+                            onClick={handleBrowseClick}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                            role="button"
+                            tabIndex={0}
+                        >
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                name="resume"
+                                id="resume"
+                                accept=".pdf"
+                                onChange={handleFileChange}
+                                hidden
+                            />
+
+                            {resumeFile ? (
+                                <div className="dropzone__file">
+                                    <span className="dropzone__file-icon" aria-hidden="true" />
+                                    <span className="dropzone__file-name">{resumeFile.name}</span>
+                                    <button type="button" className="dropzone__remove" onClick={handleRemoveFile}>
+                                        &times;
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <span className="dropzone__icon" aria-hidden="true" />
+                                    <p className="dropzone__text">
+                                        Drag &amp; drop your file here
+                                        <span>or</span>
+                                    </p>
+                                    <span className="dropzone__browse">Browse File</span>
+                                    <p className="dropzone__hint">PDF, Max 3MB</p>
+                                </>
+                            )}
+                        </div>
                     </div>
+
                     <div className="input-group">
                         <label htmlFor="selfDescription">Self Description</label>
                         <textarea
@@ -114,8 +168,8 @@ const Upload = () => {
 
                     {error && <p className="form-error">{error}</p>}
 
-                    <button type="submit" className="generate-btn" disabled={isSubmitting}>
-                        {isSubmitting ? "Generating..." : "Generate Interview Report"}
+                    <button type="submit" className="generate-btn" disabled={loading}>
+                        {loading ? "Generating..." : "Generate Interview Report"}
                     </button>
                 </div>
             </section>
@@ -139,9 +193,41 @@ const Upload = () => {
 
             </section>
         </form>
+
+        {/* Recent Reports List */}
+            {safeReports.length > 0 && (
+                <section className='recent-reports'>
+                    <h2>My Recent Interview Plans</h2>
+                    <ul className='reports-list'>
+                        {safeReports.map(report => (
+                            <li key={report._id} className='report-item' onClick={() => navigate(`/interview/${report._id}`)}>
+                                <h3>{report.title || "Untitled Position"}</h3>
+                                <p className="report-meta">
+                                    {new Date(report.createdAt).toLocaleDateString("en-IN", {
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric",
+                                    })}
+                                </p>
+                                <p
+                                    className={`match-score ${
+                                        report.matchScore >= 80
+                                            ? "score--high"
+                                            : report.matchScore >= 60
+                                            ? "score--mid"
+                                            : "score--low"
+                                    }`}
+                                >
+                                    Match Score: {report.matchScore}%
+                                </p>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
+
     </div>
   )
 }
 
 export default Upload
-

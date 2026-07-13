@@ -4,12 +4,6 @@ import dashboardPreview1 from "../../../../assets/resume.png";
 import dashboardPreview2 from "../../../../assets/resume2.png";
 import evaluationIllustration from "../../../../assets/creative-image.svg";
 
-/**
- * Adds a "reveal--visible" class to every element with class "reveal"
- * as it scrolls into view. Pure CSS can't react to scroll position,
- * so this is the minimal JS needed to drive the fade/slide-in animations
- * defined in Home.scss.
- */
 function useScrollReveal() {
     const rootRef = useRef(null);
 
@@ -20,12 +14,6 @@ function useScrollReveal() {
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        // Using a data-attribute instead of classList here on purpose:
-                        // className is authored in JSX and React resets it on every
-                        // re-render, which would silently wipe out a class added this
-                        // way. A data-* attribute isn't managed by React, so it survives
-                        // re-renders triggered by unrelated state changes elsewhere on
-                        // the page (e.g. clicking an FAQ accordion item).
                         entry.target.setAttribute("data-revealed", "true");
                         observer.unobserve(entry.target);
                     }

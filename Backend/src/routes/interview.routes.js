@@ -6,11 +6,24 @@ const upload = require("../middlewares/file.middleware")
 const interviewRouter = express.Router()
 
 /**
- * @route POST /api/interview/
+ * @route POST /api/interview-prep
  * @description generate interview report on the basis of candidates's resume pdf , self description and job description
- * @acces Private
+ * @access private
  */
 interviewRouter.post("/ai-resume-checker", authMiddleware.authUser, upload.single("resume"), interviewController.generateInterviewReportController)
 
+/**
+ * @route GET /api/interview-prep/report/:interviewId
+ * @description get interview report by interviewId.
+ * @access private
+ */
+interviewRouter.get("/report/:interviewId", authMiddleware.authUser, interviewController.getInterviewreportByidcontroller)
+
+/**
+ * @route GET /api/interview-prep/
+ * @description get all interview report of logged in user.
+ * @access private
+ */
+interviewRouter.get("/", authMiddleware.authUser, interviewController.getAllInterviewReportcontroller)
 
 module.exports = interviewRouter
