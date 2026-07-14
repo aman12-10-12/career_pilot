@@ -5,26 +5,65 @@ import Protected from "./features/auth/components/protected.jsx"
 import Home from "./features/auth/pages/Home.jsx"
 import Upload from "./features/interview/pages/Upload.jsx"
 import Interview from "./features/interview/pages/interview.jsx"
+import Demo from "./demo/Demo.jsx"
+import About from "./about/about.jsx"
+import MainLayout from "./layout/MainLayout.jsx"
+import PrivacyPolicy from "./features/legal/PrivacyPolicy.jsx"
+import TermsOfService from "./features/legal/TermsOfService.jsx"
+import CookiePolicy from "./features/legal/CookiePolicy.jsx"
 
 export const router = createBrowserRouter([
   {
-    path: "/login",
-    element: <Login />
+    element: <MainLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+      {
+        path: "/upload",
+        element: (
+          <Protected>
+            <Upload />
+          </Protected>
+        ),
+      },
+      {
+        path: "/interview/:interviewId",
+        element: (
+          <Protected>
+            <Interview />
+          </Protected>
+        ),
+      },
+      {
+        path: "/info",
+        element: <Demo />,
+      },
+      {
+        path: "/about-us",
+        element: <About />,
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/terms-of-service",
+        element: <TermsOfService />,
+      },
+      {
+        path: "/cookie-policy",
+        element: <CookiePolicy />,
+      }
+    ],
   },
-  {
-    path: "/register",
-    element: <Register />
-  },
-  {
-    path: "/",
-    element: <Home />
-  },
-  {
-    path : "/upload",
-    element : <Protected><Upload></Upload></Protected>
-  },
-  {
-    path:"/interview/:interviewId",
-    element: <Protected><Interview /></Protected>
-  }
-])
+]);

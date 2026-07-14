@@ -174,11 +174,11 @@ function MatchScoreRing({ score }) {
   const label = clamped >= 75 ? "Strong match for this role" : clamped >= 50 ? "Moderate match — a few gaps" : "Needs targeted prep";
 
   return (
-    <div className="score-ring">
-      <svg viewBox="0 0 140 140" className="score-ring__svg">
-        <circle className="score-ring__track" cx="70" cy="70" r={radius} />
+    <div className="score-ring-i">
+      <svg viewBox="0 0 140 140" className="score-ring-i__svg">
+        <circle className="score-ring-i__track" cx="70" cy="70" r={radius} />
         <circle
-          className={`score-ring__value ${tone}`}
+          className={`score-ring-i__value ${tone}`}
           cx="70"
           cy="70"
           r={radius}
@@ -186,11 +186,11 @@ function MatchScoreRing({ score }) {
           strokeDashoffset={offset}
         />
       </svg>
-      <div className="score-ring__label">
-        <span className="score-ring__number">{clamped}</span>
-        <span className="score-ring__percent">%</span>
+      <div className="score-ring-i__label">
+        <span className="score-ring-i__number">{clamped}</span>
+        <span className="score-ring-i__percent">%</span>
       </div>
-      <p className={`score-ring__caption ${tone}`}>{label}</p>
+      <p className={`score-ring-i__caption ${tone}`}>{label}</p>
     </div>
   );
 }

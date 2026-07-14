@@ -52,7 +52,7 @@ const Register = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             type="password" id="password" name="password" placeholder="••••••••" required />
                     </div>
-                    <button className="btn btn-primary" type="submit">Register</button>
+                    <button className="btn-f btn-primary-f" type="submit">Register</button>
                 </form>
 
                 <p className="redirect-link">

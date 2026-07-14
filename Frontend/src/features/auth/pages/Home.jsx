@@ -191,6 +191,36 @@ const FAQ_DATA = [
     },
 ];
 
+const BENEFITS = [
+  {
+    icon: "📊",
+    title: "ATS Resume Analysis",
+    subtitle: "Optimize Your Resume",
+    description:
+      "Analyze your resume against any job description. Discover missing keywords, improve ATS compatibility, and increase your chances of getting shortlisted.",
+    button: "Analyze Resume",
+    link: "/upload",
+  },
+  {
+    icon: "🧠",
+    title: "AI Interview Prep",
+    subtitle: "Practice with Confidence",
+    description:
+      "Generate personalized technical and behavioral interview questions based on your resume, experience, and target job role.",
+    button: "Start Preparing",
+    link: "/upload",
+  },
+  {
+    icon: "🎯",
+    title: "Skill Gap Report",
+    subtitle: "Bridge the Missing Skills",
+    description:
+      "Identify the skills you're missing and receive an AI-powered roadmap to strengthen your profile before interviews.",
+    button: "View Roadmap",
+    link: "/upload",
+  },
+];
+
 function FaqItem({ item, index, isOpen, onToggle }) {
     return (
         <div className={`faq-item reveal ${isOpen ? "faq-item--open" : ""}`}>
@@ -285,7 +315,9 @@ export default function Home() {
                         <Link to={"/upload"}>
                             <button className="btn btn--primary">Upload Resume</button>
                         </Link>
-                        <button className="btn btn--ghost">View Demo</button>
+                        <Link to={"/info"}>
+                            <button className="btn btn--ghost">More Info</button>
+                        </Link>
                     </div>
 
                     <div className="hero__trust">
@@ -386,23 +418,35 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* ---------------- PRICING ---------------- */}
-            <section className="pricing">
-                <div className="section-heading reveal">
-                    <h2>Simple, Transparent Pricing</h2>
-                    <p>Choose the plan that's right for you</p>
-                </div>
+            {/* ---------------- Benefits ---------------- */}
+            <section className="benefits">
+            <div className="section-heading reveal">
+                <h2>Everything You Need to Get Hired</h2>
+                <p>
+                More than a resume checker—an AI career assistant that prepares you for
+                every stage of the hiring process.
+                </p>
+            </div>
 
-                <div className="pricing__grid">
-                    <PricingCard plan="Free" price="₹0" features={["1 resume analysis", "Basic ATS score", "5 interview questions"]} />
-                    <PricingCard
-                        plan="Pro"
-                        price="₹499"
-                        popular
-                        features={["Unlimited analyses", "Full interview prep report", "Skill gap + prep plan"]}
-                    />
-                    <PricingCard plan="Premium" price="₹999" features={["Everything in Pro", "AI resume rewrite", "Priority support"]} />
+            <div className="benefits__grid">
+                {BENEFITS.map((item) => (
+                <div className="benefit-card reveal" key={item.title}>
+                    <div className="benefit-card__icon">{item.icon}</div>
+
+                    <h3>{item.title}</h3>
+
+                    <h4>{item.subtitle}</h4>
+
+                    <p>{item.description}</p>
+
+                    <Link to={item.link}>
+                        <button className="btn btn--primary">
+                        {item.button}
+                        </button>
+                    </Link>
                 </div>
+                ))}
+            </div>
             </section>
 
             {/* ---------------- FAQ ---------------- */}
@@ -442,25 +486,6 @@ function Testimonial({ quote, name, role }) {
                     <span>{role}</span>
                 </div>
             </div>
-        </div>
-    );
-}
-
-function PricingCard({ plan, price, features, popular }) {
-    return (
-        <div className={`pricing-card reveal ${popular ? "pricing-card--popular" : ""}`}>
-            {popular && <span className="pricing-card__badge">Popular</span>}
-            <h3>{plan}</h3>
-            <div className="pricing-card__price">
-                {price}
-                <span>/month</span>
-            </div>
-            <ul>
-                {features.map((f) => (
-                    <li key={f}>{f}</li>
-                ))}
-            </ul>
-            <button className="btn btn--primary btn--full">Get Started</button>
         </div>
     );
 }

@@ -1,0 +1,245 @@
+// ============================================================
+// Footer Styling - Matches the Resume Doctor design system
+// Uses glass-morphism, blue/green gradients, and dark theme
+// ============================================================
+
+$color-green: #34d399;
+$color-blue: #38bdf8;
+$color-purple: #a78bfa;
+$color-primary-gradient: linear-gradient(135deg, $color-blue, $color-green);
+
+$glass-bg: rgba(255, 255, 255, 0.06);
+$glass-bg-strong: rgba(255, 255, 255, 0.1);
+$glass-border: rgba(255, 255, 255, 0.14);
+
+$color-text: #f1f5f9;
+$color-text-muted: rgba(241, 245, 249, 0.68);
+$color-text-lighter: rgba(241, 245, 249, 0.5);
+
+$ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+
+.footer {
+  position: relative;
+  margin-top: 80px;
+  background: rgba(5, 8, 15, 0.55);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border-top: 1px solid $glass-border;
+  padding: 60px 32px 30px;
+
+  @media (max-width: 768px) {
+    padding: 40px 20px 20px;
+    margin-top: 60px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 30px 16px 15px;
+    margin-top: 40px;
+  }
+}
+
+// Main content grid
+.footer__content {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto 40px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+}
+
+// Individual sections
+.footer__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// Brand section styling
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.footer__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  background: $color-primary-gradient;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  width: fit-content;
+}
+
+.footer__logo-icon {
+  font-size: 24px;
+}
+
+.footer__logo-text {
+  font-size: 18px;
+}
+
+.footer__tagline {
+  color: $color-text-muted;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 280px;
+}
+
+// Social links
+.footer__socials {
+  display: flex;
+  gap: 12px;
+}
+
+.footer__social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: $glass-bg;
+  border: 1px solid $glass-border;
+  color: $color-text-muted;
+  transition: all 0.3s $ease-smooth;
+
+  &:hover {
+    background: $glass-bg-strong;
+    border-color: $color-blue;
+    color: $color-blue;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// Section titles
+.footer__section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: $color-text;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+// Links list
+.footer__links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  li {
+    a {
+      color: $color-text-muted;
+      text-decoration: none;
+      font-size: 13px;
+      transition: all 0.25s $ease-smooth;
+      display: inline-block;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: $color-primary-gradient;
+        transition: width 0.3s $ease-smooth;
+      }
+
+      &:hover {
+        color: $color-text;
+
+        &::after {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+// Divider
+.footer__divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    $glass-border 20%,
+    $glass-border 80%,
+    transparent
+  );
+  margin-bottom: 30px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Bottom section
+.footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.footer__copyright {
+  color: $color-text-lighter;
+  font-size: 12px;
+}
+
+.footer__made-with {
+  color: $color-text-lighter;
+  font-size: 12px;
+}
+
+.footer__heart {
+  display: inline-block;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  75% {
+    transform: scale(1.1);
+  }
+}

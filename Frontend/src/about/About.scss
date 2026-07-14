@@ -1,0 +1,233 @@
+.about-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.hero-card,
+.glass-card,
+.developer-card {
+  backdrop-filter: blur(18px);
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.25);
+}
+
+.hero-card{
+
+  text-align:center;
+  padding:50px;
+
+  h1{
+    font-size:3rem;
+    margin-bottom:15px;
+  }
+
+  h3{
+    font-weight:400;
+    opacity:.8;
+    line-height:1.7;
+
+    span{
+      color:#6dc7ff;
+    }
+  }
+
+}
+
+.developer-card{
+
+  display:flex;
+  gap:40px;
+  align-items:center;
+
+  padding:40px;
+
+  .left{
+
+    img{
+
+      width:220px;
+      height:220px;
+      object-fit:cover;
+      border-radius:50%;
+      border:4px solid rgba(255,255,255,.3);
+
+    }
+
+  }
+
+  .right{
+
+    flex:1;
+
+    h2{
+
+      font-size:2rem;
+      margin-bottom:20px;
+
+    }
+
+    p{
+
+      line-height:1.8;
+      color:#ddd;
+      margin-bottom:25px;
+
+    }
+
+    .contact{
+
+      display:flex;
+      flex-direction:column;
+      gap:15px;
+
+      div{
+
+        display:flex;
+        gap:10px;
+        align-items:center;
+
+      }
+
+      a{
+
+        color:#80d8ff;
+        text-decoration:none;
+
+        &:hover{
+
+          text-decoration:underline;
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+.glass-card{
+
+  padding:35px;
+
+  h2{
+
+    margin-bottom:20px;
+    color:white;
+
+  }
+
+  p{
+
+    line-height:1.8;
+    color:#ddd;
+
+  }
+
+  ul{
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    list-style:none;
+
+  }
+
+}
+
+.tech-grid{
+
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+
+  span{
+
+    padding:12px 18px;
+    border-radius:30px;
+
+    background:rgba(255,255,255,.12);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    transition:.3s;
+
+    cursor:default;
+
+    &:hover{
+
+      transform:translateY(-4px);
+      background:rgba(255,255,255,.2);
+
+    }
+
+  }
+
+}
+
+.ending{
+
+  text-align:center;
+
+}
+
+@media(max-width:900px){
+
+  .developer-card{
+
+    flex-direction:column;
+    text-align:center;
+
+    .contact{
+
+      align-items:center;
+
+    }
+
+  }
+
+}
+
+@media(max-width:600px){
+
+  .about-page{
+
+    padding:20px;
+
+  }
+
+  .hero-card{
+
+    h1{
+
+      font-size:2rem;
+
+    }
+
+  }
+
+  .developer-card{
+
+    .left{
+
+      img{
+
+        width:180px;
+        height:180px;
+
+      }
+
+    }
+
+  }
+
+}

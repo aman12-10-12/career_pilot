@@ -14,7 +14,7 @@ function App() {
         muted
         playsInline
       >
-      <source src="/13820343_3840_2160_30fps.mp4" type="video/mp4" />
+      <source src="/background.mp4" type="video/mp4" />
       </video>
 
     <div className="video-overlay"></div>
