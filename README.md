@@ -1,39 +1,104 @@
 # Resume Doctor
 
+[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com)
+[![License](https://img.shields.io/badge/license-No%20license-lightgrey)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0-blue)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/react-%5E19.2.7-61dafb)](https://react.dev)
+
 ## Overview
-Resume Doctor is a full-stack career support application built to help job seekers analyze resumes, compare resumes to job descriptions, generate interview preparation reports, and create tailored PDFs from resume content. The project is divided into two main parts:
+Resume Doctor is a polished resume analysis and interview preparation application. It helps users:
+
+- upload a resume PDF,
+- compare that resume to a target job description,
+- generate a tailored AI-powered interview report,
+- save report history,
+- and create a downloadable PDF resume.
+
+The workspace is split into two complementary applications:
 
 - `Backend/`: Node.js + Express API server with authentication, file upload, MongoDB storage, and AI-powered report generation.
-- `Frontend/`: React + Vite client application with authentication, file upload forms, report viewing, and interactive user flow.
+- `Frontend/`: React + Vite client application with auth, upload forms, report viewing, and interactive navigation.
 
-> This README documents the architecture, backend flow, frontend flow, and how both systems connect.
+> This README was created to describe the complete full-stack architecture, the backend flow, frontend flow, and how both sides communicate.
 
 ---
 
 ## Table of Contents
 
-1. [Architecture Summary](#architecture-summary)
-2. [Backend Flow](#backend-flow)
-   - [Directory Structure](#backend-directory-structure)
-   - [Key Backend Components](#key-backend-components)
-   - [Backend Flow Diagram](#backend-flow-diagram)
-3. [Frontend Flow](#frontend-flow)
-   - [Directory Structure](#frontend-directory-structure)
-   - [Key Frontend Components](#key-frontend-components)
-   - [Frontend Flow Diagram](#frontend-flow-diagram)
-4. [Combined Flow](#combined-flow)
-5. [Environment & Setup](#environment--setup)
-6. [Important Notes](#important-notes)
+1. [Features](#features)
+2. [Tech Stack](#tech-stack)
+3. [Screenshots](#screenshots)
+4. [Architecture Summary](#architecture-summary)
+5. [Backend Flow](#backend-flow)
+6. [Frontend Flow](#frontend-flow)
+7. [API Endpoint Summary](#api-endpoint-summary)
+8. [Environment & Setup](#environment--setup)
+9. [Future Improvements](#future-improvements)
+10. [Author](#author)
+11. [License](#license)
+
+---
+
+## Features
+
+- User registration, login, and session-based authentication
+- JWT cookie management with token blacklist support
+- Secure resume PDF upload with `multer`
+- Resume parsing using `pdf-parse`
+- AI-generated interview preparation reports via Google GenAI
+- Saved report history for each user
+- PDF resume generation from AI-designed HTML content
+- Protected frontend routes for upload and report viewing
+- Clear separation of backend and frontend responsibilities
+
+---
+
+## Tech Stack
+
+- Frontend: React 19, Vite, Sass, React Router, Axios
+- Backend: Node.js, Express, MongoDB, Mongoose, JWT, bcryptjs, cookie-parser, CORS
+- AI & PDF: Google GenAI, Zod validation, Puppeteer
+- Authentication: cookie-based JWT with blacklist logout
+
+---
+
+## Screenshots
+
+### Landing / Upload Demo
+
+![Dashboard and Upload](Frontend/src/demo/screenshots/dashboard-and-upload.png)
+
+### Interview Report Preview
+
+![Interview Prep Questions](Frontend/src/demo/screenshots/interview-prep-questions.png)
+
+### Recent Interview Plans
+
+![Recent Interview Plans](Frontend/src/demo/screenshots/recent-interview-plans.png)
 
 ---
 
 ## Architecture Summary
 
-Resume Doctor is built as a client-server application:
+Resume Doctor is designed as a client/server application with clear separation between UI and API.
 
-- **Frontend** is a React application served by Vite. It provides login/register screens, resume upload, job description input, report generation, and viewing saved interview reports.
-- **Backend** is an Express server that connects to MongoDB. It handles user authentication, JWT cookie management, resume upload parsing, secure AI report generation, PDF generation, and report storage.
-- The frontend uses authenticated API requests with cookies, and the backend protects sensitive routes using middleware.
+- The frontend handles user interactions, authentication state, file upload, and report display.
+- The backend handles authentication, file parsing, AI orchestration, report persistence, and PDF generation.
+- MongoDB stores users and generated interview report documents.
+- Google GenAI produces structured JSON outputs and HTML-based resume content.
+
+### Architecture Diagram
+
+```mermaid
+flowchart LR
+  F[Frontend<br/>React + Vite] -->|HTTP + cookies| B[Backend<br/>Express API]
+  B -->|stores| DB[MongoDB]
+  B -->|calls| AI[Google GenAI]
+  B -->|renders| PDF[Puppeteer]
+  F -->|auth| B
+  F -->|upload resume + job description| B
+  F -->|fetch reports| B
+```
 
 ---
 
@@ -196,39 +261,18 @@ Frontend/
 
 ---
 
-## Combined Flow
+## API Endpoint Summary
 
-### End-to-End Sequence
-
-1. **User Authentication**
-   - Frontend calls backend auth endpoints.
-   - Backend issues JWT in an HTTP-only cookie.
-   - Frontend uses this cookie for all further authenticated API requests.
-
-2. **Report Generation**
-   - On `/upload`, frontend submits resume file + text.
-   - Backend parses the PDF into plain text.
-   - Backend sends a prompt to Google GenAI via `ai.service`.
-   - AI returns a structured JSON report.
-   - Backend validates and saves this report to MongoDB.
-   - Frontend receives and renders the report.
-
-3. **Report Retrieval**
-   - Frontend request `/api/interview-prep/` to list saved reports.
-   - Backend returns report summaries for the authenticated user.
-   - Frontend request `/api/interview-prep/report/:interviewId` for a full report.
-
-4. **Resume PDF Generation**
-   - Frontend calls `/api/interview-prep/resume/pdf/:interviewReportId`.
-   - Backend reuses saved report data and AI-generated resume HTML.
-   - Puppeteer renders HTML to PDF and returns the file.
-
-### Integration Points
-
-- `Backend/src/app.js` sets the CORS and credentials policy used by the frontend.
-- `Frontend/src/features/interview/services/interview.api.js` uses `withCredentials: true`.
-- Protected frontend routes rely on the backend cookie-based auth mechanism.
-- Both systems communicate through JSON-based REST APIs.
+| Endpoint | Method | Auth Required | Purpose |
+|---|---|---|---|
+| `/api/auth/register` | POST | No | Register a new user |
+| `/api/auth/login` | POST | No | Login and create session cookie |
+| `/api/auth/logout` | GET | Yes | Logout and blacklist token |
+| `/api/auth/get-me` | GET | Yes | Fetch current user info |
+| `/api/interview-prep/ai-resume-checker` | POST | Yes | Upload resume + JD + self description to generate report |
+| `/api/interview-prep/` | GET | Yes | List all saved reports for user |
+| `/api/interview-prep/report/:interviewId` | GET | Yes | Get one saved report detail |
+| `/api/interview-prep/resume/pdf/:interviewReportId` | POST | Yes | Generate downloadable resume PDF |
 
 ---
 
@@ -250,13 +294,67 @@ Frontend/
    - `HASH_ITERATIONS`
    - `BACKEND_PORT`
    - `GOOGLE_GENAI_API_KEY`
-
 4. Run the backend:
    ```bash
    npm run dev
    ```
 
 ### Frontend Setup
+
+1. Navigate to the frontend folder:
+   ```bash
+   cd Frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the frontend:
+   ```bash
+   npm run dev
+   ```
+
+### Default Local URLs
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:3000`
+
+---
+
+## Future Improvements
+
+- Add proper CI/CD badge and automated tests.
+- Add a LICENSE file to clarify open-source usage.
+- Implement refresh token support for longer login sessions.
+- Add frontend state for report history filtering and pagination.
+- Add better error handling and user notifications for backend failures.
+- Add a real UI dashboard for report analytics and match trends.
+- Add multi-file resume uploads and resume version history.
+
+---
+
+## Author
+
+- Aman Raj
+- Project creator and proof of concept implementer
+
+---
+
+## License
+
+- No license is specified for this repository.
+- Add a `LICENSE` file if you want to publish this as open source.
+
+---
+
+## Image Notes
+
+The repo includes demo screenshots used in this README:
+
+- `Frontend/src/demo/screenshots/dashboard-and-upload.png`
+- `Frontend/src/demo/screenshots/interview-prep-questions.png`
+- `Frontend/src/demo/screenshots/recent-interview-plans.png`
+
 
 1. Navigate to the frontend folder:
    ```bash
