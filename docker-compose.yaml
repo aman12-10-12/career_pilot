@@ -1,0 +1,30 @@
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./Backend/.env
+    ports:
+      - "5001:5000"
+    restart: unless-stopped
+    networks:
+      - rd-net
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./Frontend/.env
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - rd-net
+
+networks:
+  rd-net:
+    driver: bridge

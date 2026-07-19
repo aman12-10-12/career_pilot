@@ -29,13 +29,14 @@ The workspace is split into two complementary applications:
 2. [Tech Stack](#tech-stack)
 3. [Screenshots](#screenshots)
 4. [Architecture Summary](#architecture-summary)
-5. [Backend Flow](#backend-flow)
-6. [Frontend Flow](#frontend-flow)
-7. [API Endpoint Summary](#api-endpoint-summary)
-8. [Environment & Setup](#environment--setup)
-9. [Future Improvements](#future-improvements)
-10. [Author](#author)
-11. [License](#license)
+5. [Project Workflow](#project-workflow)
+6. [Backend Flow](#backend-flow)
+7. [Frontend Flow](#frontend-flow)
+8. [API Endpoint Summary](#api-endpoint-summary)
+9. [Environment & Setup](#environment--setup)
+10. [Future Improvements](#future-improvements)
+11. [Author](#author)
+12. [License](#license)
 
 ---
 
@@ -99,6 +100,38 @@ flowchart LR
   F -->|upload resume + job description| B
   F -->|fetch reports| B
 ```
+
+---
+
+## Project Workflow
+
+Resume Doctor follows a simple end-to-end workflow from user action to AI-generated results:
+
+1. A user signs up or logs in through the React frontend.
+2. The frontend sends the resume, job description, and self-description to the backend API.
+3. The backend validates the request, parses the uploaded PDF, and prepares the input for the AI service.
+4. Google GenAI generates an interview-prep report and a resume-ready HTML structure.
+5. The backend stores the report in MongoDB and returns it to the frontend.
+6. The frontend displays the report and lets the user view or download the generated resume PDF.
+
+### Workflow Diagram
+
+```mermaid
+flowchart TD
+  U[User] --> F[Frontend<br/>React + Vite]
+  F --> A[Auth APIs]
+  F --> I[Interview APIs]
+  A --> B[Backend<br/>Express + Node]
+  I --> B
+  B --> DB[MongoDB]
+  B --> AI[Google GenAI]
+  B --> PDF[Puppeteer PDF]
+  B --> F
+```
+
+### Deployment Reference
+
+For the production deployment guide on AWS ECS Fargate, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ---
 

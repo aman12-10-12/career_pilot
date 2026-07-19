@@ -1,23 +1,34 @@
 const express = require('express');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const app = express();
 
-// Middleware to parse JSON requests
 app.use(express.json());
 app.use(cookieParser());
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://resume-doctor-alb-535703116.ap-south-1.elb.amazonaws.com',
+];
+
 app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true, // Allow cookies to be sent
-  }));
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+}));
 
-// require all the routes here 
-const authRouter = require('./routes/auth.route')
-const interviewRouter = require("./routes/interview.routes")
+app.get("/health", (_req, res) => res.status(200).json({ status: "ok" }));
+app.get("/api/health", (_req, res) => res.status(200).json({ status: "ok" }));
 
-//  using all the routes here
-app.use("/api/auth", authRouter)
-app.use("/api/interview-prep",interviewRouter)
+const authRouter = require('./routes/auth.route');
+const interviewRouter = require("./routes/interview.routes");
+
+app.use("/api/auth", authRouter);
+app.use("/api/interview-prep", interviewRouter);
 
 module.exports = app;
