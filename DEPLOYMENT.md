@@ -350,5 +350,5 @@ To keep this deployment from being unnecessarily exposed:
 - Turn on ECS deployment alarms for automatic rollback on repeated task failures
 
 ---
-
-*Document generated as a reference for the Resume Doctor deployment on AWS ECS Fargate, region `ap-south-1`.*
+# Note
+*Document reference for the Resume Doctor deployment on AWS ECS Fargate, region `ap-south-1`.*
